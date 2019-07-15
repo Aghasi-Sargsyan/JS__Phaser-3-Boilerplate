@@ -1,7 +1,6 @@
 import "phaser";
-import {SCENE_TYPES} from '../constants/general';
+import {SCENE_TYPES, WORLD_POS} from '../constants/general';
 import logoImg from '../assets/images/logo.png';
-import config from '../config/config';
 
 export default class LoadingScene extends Phaser.Scene{
 	constructor() {
@@ -13,19 +12,13 @@ export default class LoadingScene extends Phaser.Scene{
 
 		this.load.on('progress', (value) => {
 
-			this.createLoadingText();
+			this.createProgressBar(value);
 
-			const progressBar = this.createProgressBar();
-			this.fillProgressbar(progressBar, value);
 		});
 
-		this.load.on('fileprogress', (file) => {
-			console.log(file.src);
-		});
+		this.load.on('fileprogress', (file) => console.log(file.src));
 
-		this.load.on('complete', ()=> {
-			this.goToGameScene()
-		});
+		this.load.on('complete', ()=> this.goToGameScene());
 	}
 
 	loadImages(){
@@ -36,35 +29,38 @@ export default class LoadingScene extends Phaser.Scene{
 		this.scene.start(SCENE_TYPES.gameScene);
 	}
 
-	createProgressBar(){
+	createProgressBar(progressValue){
+
+		const boxWidth = 320;
+		const boxHeight = 50;
+		const diff = 20;
+		const barWidth = boxWidth - diff;
+		const barHeight = boxHeight - diff;
+
+		const box_x = WORLD_POS.center_x - boxWidth / 2;
+		const box_y = WORLD_POS.center_y - boxHeight / 2;
+		const bar_x = box_x + diff / 2;
+		const bar_y = box_y + diff / 2;
 
 		const progressBox = this.add.graphics();
-		const progressBar = this.add.graphics();
-		const boxWidth = 320;
 		progressBox.fillStyle(0x222222, 0.8);
-		progressBox.fillRect(config.width/2, config.height/2, boxWidth, 50);
+		progressBox.fillRect(box_x, box_y, boxWidth, boxHeight);
 
-		return progressBar;
-	}
-
-	fillProgressbar(progressBar, value){
-		progressBar.clear();
+		const progressBar = this.add.graphics();
 		progressBar.fillStyle(0xffffff, 1);
-		progressBar.fillRect(config.width/2, config.height/2, 300 * value, 30);
-	}
+		progressBar.fillRect(bar_x, bar_y, barWidth * progressValue, barHeight);
 
-	createLoadingText(){
-		const width = this.cameras.main.width;
-		const height = this.cameras.main.height;
+
 		const loadingText = this.make.text({
-			x: width / 2,
-			y: height / 2 - 50,
+			x: WORLD_POS.center_x,
+			y: box_y - 20,
 			text: 'Loading...',
 			style: {
 				font: '20px monospace',
 				fill: '#ffffff'
 			}
 		});
-	}
 
+			loadingText.setOrigin(0.5, 0.5);
+		}
 }
