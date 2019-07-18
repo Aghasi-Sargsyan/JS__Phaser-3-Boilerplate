@@ -1,7 +1,7 @@
 import config from '../config/config';
 
 export const SCENE_TYPES = {
-	gameScene: 'gameScene',
+	lobbyScene: 'lobbyScene',
 	loadingScene: "loadingScene"
 };
 

@@ -1,9 +1,16 @@
 import 'phaser'
 import {SCENE_TYPES} from '../constants/general';
 
-export default class GameScene extends Phaser.Scene {
+export default class LobbyScene extends Phaser.Scene {
 	constructor(){
-		super(SCENE_TYPES.gameScene);
+		super(SCENE_TYPES.lobbyScene);
+	}
+
+	preload(){
+
+		if (this.scene.get(SCENE_TYPES.loadingScene)){
+			this.scene.remove(SCENE_TYPES.loadingScene);
+		}
 	}
 
 	create() {
@@ -17,9 +24,5 @@ export default class GameScene extends Phaser.Scene {
 			yoyo: true,
 			loop: -1
 		});
-	}
-
-	update(time, delta) {
-
 	}
 }
